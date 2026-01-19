@@ -1,3 +1,9 @@
+### Java compiled files ###
+*.class
+
+### JAR files ###
+gson-*.jar
+
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
