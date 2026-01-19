@@ -6,7 +6,7 @@ public class Main {
     public static void main (String[] args) {
 
         //Instantiate the repository to save/read data
-        UserRepository dataBank = new UserRepository();
+        UserRepository dataBase = new UserRepository();
 
         //1. Create a new User instance (using the constructor)
         User myUser = new User(1,"Rotimi", "owo@owo.com");
@@ -22,10 +22,19 @@ public class Main {
         // myUser.name = "Test"; // This fails because 'name' is private!
 
         //Save the users to file
-        dataBank.save(myUser);
+//        dataBank.save(myUser);
 
         //Read information from file and save to allUsers
-        List<User> allUsers = dataBank.findAll();
+        List<User> allUsers = dataBase.findAll();
+
+        // 2. Print them out
+        System.out.println("Total Users found: " + allUsers.size());
+        for (User u : allUsers) {
+            System.out.println("ID: " + u.getId() + " | Name: " + u.getName());
+        }
+
+        //Update a single user
+        dataBase.update(new User(3, "Shola", "sholz@mail.com"));
 
     }
 }

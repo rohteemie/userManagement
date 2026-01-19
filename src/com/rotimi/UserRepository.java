@@ -6,7 +6,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -31,12 +30,26 @@ public class UserRepository {
              BufferedWriter bw = new BufferedWriter(fw)) {
 
             bw.write(objectInLine);
-            System.out.println("User saved to file!");
+            System.out.println("\nUser saved to file!");
 
         } catch (IOException e) {
             // Java forces us to handle the possibility that the disk is full
             // or the file is read-only
             LOGGER.log(Level.SEVERE, "Failed to save user to file", e);
+        }
+    }
+
+    private void saveAll(List<User> users) {
+        // Note: 'false' here means "overwrite", not "append"
+        try (FileWriter fw = new FileWriter(FILE_PATH, false);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+
+            for (User user : users) {
+                String line = user.getId() + "," + user.getName() + "," + user.getEmail() + "\n";
+                bw.write(line);
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to overwrite user file", e);
         }
     }
 
@@ -72,5 +85,30 @@ public class UserRepository {
         }
 
         return users;
+    }
+
+    public void update(User updatedUser) {
+        List<User> users = findAll();
+
+        for (User u : users) {
+            if (u.getId() == updatedUser.getId()) {
+                u.setName(updatedUser.getName());
+                u.setEmail(updatedUser.getEmail());
+                break;
+            }
+        }
+
+        saveAll(users);
+    }
+
+    public void delete(int id) {
+        List<User> users = findAll();
+
+        // Remove the user if their ID matches
+        // In Java 8+, we can use a "Predicate" (similar to a JS filter)
+        users.removeIf(user -> user.getId() == id);
+
+        // Save the new list back to the disk
+        saveAll(users);
     }
 }
